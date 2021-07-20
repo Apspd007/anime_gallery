@@ -1,5 +1,6 @@
 import 'package:anime_list/Designs/Materials/Colors.dart';
 import 'package:anime_list/Model/AnimeJsonModel.dart';
+import 'package:anime_list/Features/Listing/AnimesListing.dart';
 import 'package:anime_list/Services/FirestoreDatabase.dart';
 import 'package:anime_list/Widgets/GetImage.dart';
 import 'package:anime_list/Widgets/LoadingState.dart';
@@ -9,12 +10,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class SearchResult extends StatefulWidget {
+class CharacterSearchResult extends StatefulWidget {
+  final String characterName;
+  final String animeName;
+  CharacterSearchResult({
+    required this.characterName,
+    required this.animeName,
+  });
+
   @override
-  _SearchResultState createState() => _SearchResultState();
+  _CharacterSearchResultState createState() => _CharacterSearchResultState();
 }
 
-class _SearchResultState extends State<SearchResult> {
+class _CharacterSearchResultState extends State<CharacterSearchResult> {
   @override
   Widget build(BuildContext context) {
     Database _database = MyFirestoreDatabse();
@@ -23,21 +31,37 @@ class _SearchResultState extends State<SearchResult> {
       statusBarColor: DefaultUIColors.appBarColor,
     ));
     final padding = MediaQuery.of(context).padding.top;
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Padding(
-        padding: EdgeInsets.only(top: padding),
-        child: FutureBuilder<DocumentSnapshot<Object?>>(
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFF6BEE5),
+              Color(0xFFD1FFFD),
+            ]),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: DefaultUIColors.appBarColor,
+        ),
+        body: FutureBuilder<DocumentSnapshot<Object?>>(
             future: _database.getAnimesAsFuture(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   Map<String, dynamic> _data =
                       snapshot.data!.data() as Map<String, dynamic>;
-                  AnimeJsonModel data = animeJsonModelFromJson(_data, 'NARUTO');
+
+                  AnimeJsonModel data =
+                      animeJsonModelFromJson(_data, widget.animeName);
+
+                  final characterList =
+                      AnimeListing.getCharacterList(data, widget.characterName);
+
                   return CustomScrollView(slivers: [
-                    appBar(),
-                    imageGrid(context, data),
+                    imageGrid(context, characterList),
                   ]);
                 } else {
                   return Center(child: LoadingState.defaultGifLoading());
@@ -54,20 +78,9 @@ class _SearchResultState extends State<SearchResult> {
     );
   }
 
-  SliverAppBar appBar() {
-    return SliverAppBar(
-      floating: true,
-      expandedHeight: 70.h,
-      toolbarHeight: 50.h,
-      backgroundColor: DefaultUIColors.appBarColor,
-      actions: [],
-    );
-  }
-
-  SliverPadding imageGrid(BuildContext context, AnimeJsonModel snapshot) {
+  SliverPadding imageGrid(BuildContext context, List<Anime> snapshot) {
     // final bool dataSaver = Provider.of<AppSettingsConfig>(context).saveData;
     // print('dataSaver: $dataSaver');
-    print('animes : ${snapshot.anime.length}');
     return SliverPadding(
       padding: const EdgeInsets.all(10.0),
       sliver: SliverStaggeredGrid.countBuilder(
@@ -75,15 +88,15 @@ class _SearchResultState extends State<SearchResult> {
           crossAxisSpacing: 10.0,
           mainAxisSpacing: 10.0,
           staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-          itemCount: snapshot.anime.length,
+          itemCount: snapshot.length,
           itemBuilder: (BuildContext context, int index) {
             return GetImage(
-              animeNameEng: snapshot.anime[index].animeNameEng,
-              animeNameJap: snapshot.anime[index].animeNameJap,
-              characterName: snapshot.anime[index].characterName,
-              previewImage: snapshot.anime[index].previewImage,
-              image: snapshot.anime[index].image,
-              imageSource: snapshot.anime[index].imageSource,
+              animeNameEng: snapshot[index].animeNameEng,
+              animeNameJap: snapshot[index].animeNameJap,
+              characterName: snapshot[index].characterName,
+              previewImage: snapshot[index].previewImage,
+              image: snapshot[index].image,
+              imageSource: snapshot[index].imageSource,
             );
           }),
     );

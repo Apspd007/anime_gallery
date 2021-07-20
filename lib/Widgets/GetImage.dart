@@ -1,9 +1,7 @@
 import 'dart:ui';
 import 'package:anime_list/Routes/Pages/ImageDetailPage.dart';
-import 'package:anime_list/Widgets/ImageOptions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'dart:isolate';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';

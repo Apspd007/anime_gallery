@@ -1,7 +1,7 @@
 import 'dart:ui';
-import 'package:anime_list/CustomWidgets/imageDescribtion.dart';
+import 'package:anime_list/Designs/Materials/Colors.dart';
+import 'package:anime_list/Widgets/imageDescribtion.dart';
 import 'package:anime_list/Routes/Pages/FullView.dart';
-import 'package:anime_list/Services/DownloadFiles.dart';
 import 'package:anime_list/Widgets/ElevatedGadientButton.dart';
 import 'package:anime_list/Widgets/LoadingState.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -82,7 +82,7 @@ class _ImageDetailState extends State<ImageDetail> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            backgroundColor: Colors.transparent,
+            backgroundColor: DefaultUIColors.appBarColor,
           ),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.w),
@@ -142,6 +142,7 @@ class _ImageDetailState extends State<ImageDetail> {
               ),
               /////////////////////////////////////////
               SizedBox(height: 20.h),
+              // image describtion
               ImageDescribtion(
                 engName: widget.engAnimeName,
                 japName: widget.japAnimeName,

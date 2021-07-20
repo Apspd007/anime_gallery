@@ -1,3 +1,4 @@
+import 'package:anime_list/Routes/Pages/CharacterSearchResult.dart';
 import 'package:anime_list/Widgets/TagButon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,11 +35,29 @@ class _ImageDescribtionState extends State<ImageDescribtion> {
       final List list = widget.tags;
       final List<Widget> children = [];
       list.forEach((element) {
-        children.add(TagButton(text: element, onPressed: () {}));
+        children.add(TagButton(
+            text: element,
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => CharacterSearchResult(
+                        characterName: element,
+                        animeName: widget.engName,
+                      )));
+            }));
       });
       return children;
     } else {
-      return [TagButton(text: widget.tags, onPressed: () {})];
+      return [
+        TagButton(
+            text: widget.tags,
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => CharacterSearchResult(
+                        characterName: widget.tags,
+                        animeName: widget.engName,
+                      )));
+            })
+      ];
     }
   }
 

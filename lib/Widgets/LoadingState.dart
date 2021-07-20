@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class LoadingState {
   LoadingState._();
-  @override
   static Widget defaultGifLoading() {
     return Image.asset(
       'assets/wallpaper/placeholder/waiting.gif',

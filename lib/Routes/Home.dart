@@ -1,11 +1,8 @@
-import 'dart:math';
-
 import 'package:anime_list/Designs/Materials/Colors.dart';
 import 'package:anime_list/Features/For_HomeScreen/FavoriteImagesFromDB.dart';
 import 'package:anime_list/Features/For_HomeScreen/RandomImagesFromDB.dart';
 import 'package:anime_list/Model/AnimeJsonModel.dart';
-import 'package:anime_list/Model/AnimeModel.dart';
-import 'package:anime_list/Model/RandomAnimesListing.dart';
+import 'package:anime_list/Features/Listing/AnimesListing.dart';
 import 'package:anime_list/Services/FirestoreDatabase.dart';
 import 'package:anime_list/Widgets/GetImage.dart';
 import 'package:anime_list/Widgets/LoadingState.dart';
@@ -21,7 +18,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late List<String> _animeName;
   bool isRandomPressed = true;
   bool isFavPressed = false;
   int index = 0;
@@ -72,9 +68,8 @@ class _HomeState extends State<Home> {
                 if (snapshot.connectionState == ConnectionState.done) {
                   Map<String, dynamic> _data =
                       snapshot.data!.data() as Map<String, dynamic>;
-                  _animeName = _data.keys.toList();
-                  List<AnimeModel> data =
-                      MyRandomAnimeListing.getRandomList(_data);
+                  List<Anime> data =
+                      AnimeListing.getRandomList(_data);
                   // MyRandomAnimeListing.getRandom();
                   // AnimeJsonModel data =
                   //     animeJsonModelFromJson(_data, 'Azur Lane');
@@ -136,10 +131,9 @@ class _HomeState extends State<Home> {
     );
   }
 
-  SliverPadding imageGrid(BuildContext context, List<AnimeModel> snapshot) {
+  SliverPadding imageGrid(BuildContext context, List<Anime> snapshot) {
     // final bool dataSaver = Provider.of<AppSettingsConfig>(context).saveData;
     // print('dataSaver: $dataSaver');
-    print('animes : ${snapshot.length}');
     return SliverPadding(
       padding: const EdgeInsets.all(10.0),
       sliver: SliverStaggeredGrid.countBuilder(

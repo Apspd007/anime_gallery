@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:anime_list/CustomWidgets/UIIcons.dart';
+import 'package:anime_list/Widgets/UIIcons.dart';
 import 'package:anime_list/Designs/Materials/Colors.dart';
 import 'package:anime_list/Routes/Categaries.dart';
 import 'package:anime_list/Routes/Home.dart';
@@ -15,7 +15,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int index = 2;
+  int index = 0;
   @override
   Widget build(BuildContext context) {
     print('fMyApp, Size : ${MediaQuery.of(context).size}');
