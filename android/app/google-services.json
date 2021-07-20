@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "259873849996",
+    "project_id": "anime-wallpaper-9b6b3",
+    "storage_bucket": "anime-wallpaper-9b6b3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259873849996:android:9489a8b5c07e718c73b1a9",
+        "android_client_info": {
+          "package_name": "com.aniapp.anime.wallpaper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "259873849996-6cu40c8g5qdihfnbspo69afjavf742g2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aniapp.anime.wallpaper",
+            "certificate_hash": "cddf93754c1d33473b74b14c77c873ae6a1add84"
+          }
+        },
+        {
+          "client_id": "259873849996-n5fnk1ki0daskkm8abr9h04hp2eegoer.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkAZ5s-JuQHJbBM6vnIkwwhBriGixaRz4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259873849996-n5fnk1ki0daskkm8abr9h04hp2eegoer.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
