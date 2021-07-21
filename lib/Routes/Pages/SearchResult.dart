@@ -8,21 +8,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CharacterSearchResult extends StatefulWidget {
-  final String characterName;
-  final String animeName;
-  CharacterSearchResult({
-    required this.characterName,
-    required this.animeName,
+class SearchResult extends StatefulWidget {
+  final String searchTerm;
+  SearchResult({
+    required this.searchTerm,
   });
 
   @override
-  _CharacterSearchResultState createState() => _CharacterSearchResultState();
+  _SearchResultState createState() => _SearchResultState();
 }
 
-class _CharacterSearchResultState extends State<CharacterSearchResult> {
+class _SearchResultState extends State<SearchResult> {
   @override
   Widget build(BuildContext context) {
     Database _database = MyFirestoreDatabse();
@@ -30,7 +27,6 @@ class _CharacterSearchResultState extends State<CharacterSearchResult> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: DefaultUIColors.appBarColor,
     ));
-    // final padding = MediaQuery.of(context).padding.top;
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -47,7 +43,7 @@ class _CharacterSearchResultState extends State<CharacterSearchResult> {
           backgroundColor: DefaultUIColors.appBarColor,
         ),
         body: FutureBuilder<DocumentSnapshot<Object?>>(
-            future: _database.getAnimesAsFuture(),
+            future: _database.getAllImagesAsFuture(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 if (snapshot.connectionState == ConnectionState.done) {
@@ -55,10 +51,9 @@ class _CharacterSearchResultState extends State<CharacterSearchResult> {
                       snapshot.data!.data() as Map<String, dynamic>;
 
                   AnimeJsonModel data =
-                      animeJsonModelFromJson(_data, widget.animeName);
-
-                  final characterList = AnimeListing.getAnimeSearchResult(
-                      data, widget.characterName);
+                      animeJsonModelFromJson(_data, 'all_images');
+                  List<Anime> characterList = AnimeListing.getAnimeSearchResult(
+                      data, widget.searchTerm);
 
                   return CustomScrollView(slivers: [
                     imageGrid(context, characterList),

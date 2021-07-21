@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 
 abstract class Database {
   Future<DocumentSnapshot<Object?>> getAnimesAsFuture();
@@ -23,13 +22,17 @@ class MyFirestoreDatabse implements Database {
   }
 
   void getAnimes() {
-    final doc = _collectionReference.doc('all_images').snapshots();
-    final v = doc.forEach((event) {
-      final Map<String, dynamic> data = event.data() as Map<String, dynamic>;
-      final list = data.values.toList();
-      print(list[0][0]);
-      return list[0][0];
-    });
+    // final Stream<DocumentSnapshot> doc =
+    //     _collectionReference.doc('all_images').snapshots();
+    // final List li = [];
+    // final v = doc.forEach((event) {
+    //   final Map<String, dynamic> data = event.data() as Map<String, dynamic>;
+    //   final list = data.values.toList();
+    //   // print(list[0][0]);
+    //   li.add(list[0][0]);
+    //   print(li);
+    //   return list[0][0];
+    // });
   }
 
   Future<DocumentSnapshot<Object?>> getAllImagesAsFuture() {

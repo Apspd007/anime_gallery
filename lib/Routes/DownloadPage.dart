@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class DownloadPage extends StatelessWidget {
-  Database database = MyFirestoreDatabse();
+  final Database database = MyFirestoreDatabse();
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -15,7 +15,6 @@ class DownloadPage extends StatelessWidget {
           child: TextButton(
             child: Text('DownloadPage'),
             onPressed: () {
-              database.getAnimes();
             },
           ),
         ));
