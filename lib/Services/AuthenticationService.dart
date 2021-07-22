@@ -1,3 +1,4 @@
+import 'package:anime_list/Services/FirestoreDatabase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LocalUser {
@@ -15,12 +16,21 @@ class LocalUser {
 
 abstract class AuthBase {
   Stream<LocalUser?> authStateChange();
-  Future<void> signOut();
+  Future<void> signOut(String userId, bool isAnonymous);
   Future<LocalUser?> signInAnonymously();
+  Future<LocalUser?> signInWithEmailPassword(
+      {required String email, required String password});
+  Future<LocalUser?> registerWithEmailPassword(
+      {required String email, required String password});
 }
 
 class Auth implements AuthBase {
   final _firebaseInstance = FirebaseAuth.instance;
+  final Database _database = MyFirestoreDatabse();
+
+  final jsonData = {
+    "UserData": {"searchedKeywords": []}
+  };
 
   LocalUser? _userFromFirebase(User? _user) {
     if (_user != null) {
@@ -41,13 +51,30 @@ class Auth implements AuthBase {
   }
 
   @override
-  Future<void> signOut() async {
+  Future<void> signOut(String userId, bool isAnonymous) async {
+    if (isAnonymous) _database.deleteUser(userId);
     await _firebaseInstance.signOut();
   }
 
   @override
   Future<LocalUser?> signInAnonymously() async {
     final authResult = await _firebaseInstance.signInAnonymously();
+    await _database.setUser(authResult.user!.uid, jsonData);
+    return _userFromFirebase(authResult.user);
+  }
+
+  Future<LocalUser?> registerWithEmailPassword(
+      {required String email, required String password}) async {
+    final authResult = await _firebaseInstance.createUserWithEmailAndPassword(
+        email: email, password: password);
+    return _userFromFirebase(authResult.user);
+  }
+
+  Future<LocalUser?> signInWithEmailPassword(
+      {required String email, required String password}) async {
+    final authResult = await _firebaseInstance.signInWithEmailAndPassword(
+        email: email, password: password);
+    // await _database.setUser(authResult.user!.uid, jsonData);
     return _userFromFirebase(authResult.user);
   }
 }

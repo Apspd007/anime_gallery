@@ -5,7 +5,6 @@ import 'package:anime_list/Model/AnimeJsonModel.dart';
 class SearchSuggestions {
   static FutureOr<List<String>> getSuggestions(
       AnimeJsonModel data, String pattern) {
-    //  static void getSuggestions(String) {
     List<Anime> animes = data.anime;
     List<String> suggestionsList = [];
     for (var item in animes) {

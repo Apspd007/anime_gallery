@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:anime_list/MainPages/EntryPage.dart';
+import 'package:anime_list/EntryPage.dart';
 import 'package:anime_list/Services/AuthenticationService.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

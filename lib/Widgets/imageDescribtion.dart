@@ -1,5 +1,5 @@
 import 'package:anime_list/Routes/Pages/CharacterSearchResult.dart';
-import 'package:anime_list/Widgets/TagButon.dart';
+import 'package:anime_list/Widgets/TagButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

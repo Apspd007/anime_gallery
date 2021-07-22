@@ -3,14 +3,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 abstract class Database {
   Future<DocumentSnapshot<Object?>> getAnimesAsFuture();
   Stream<DocumentSnapshot<Object?>> getAnimesAsStream();
+  Stream<DocumentSnapshot<Object?>> getUserData(String userId);
+  Future<void> setUser(String userId, Map<String, dynamic> data);
+  Future<void> updateUser(String userId, String key, dynamic value);
+  Future<void> deleteUser(String userId);
   Future<DocumentSnapshot<Object?>> getAllImagesAsFuture();
-  void getAnimes();
 }
 
 class MyFirestoreDatabse implements Database {
   CollectionReference _collectionReference =
       FirebaseFirestore.instance.collection('collections');
-
+  CollectionReference _userReference =
+      FirebaseFirestore.instance.collection('users');
   Future<DocumentSnapshot<Object?>> getAnimesAsFuture() {
     final _doc = _collectionReference.doc('animes').get();
     return _doc;
@@ -21,22 +25,39 @@ class MyFirestoreDatabse implements Database {
     return _doc;
   }
 
-  void getAnimes() {
-    // final Stream<DocumentSnapshot> doc =
-    //     _collectionReference.doc('all_images').snapshots();
-    // final List li = [];
-    // final v = doc.forEach((event) {
-    //   final Map<String, dynamic> data = event.data() as Map<String, dynamic>;
-    //   final list = data.values.toList();
-    //   // print(list[0][0]);
-    //   li.add(list[0][0]);
-    //   print(li);
-    //   return list[0][0];
-    // });
-  }
-
   Future<DocumentSnapshot<Object?>> getAllImagesAsFuture() {
     final _doc = _collectionReference.doc('all_images').get();
     return _doc;
+  }
+
+  Stream<DocumentSnapshot<Object?>> getUserData(String userId) {
+    // final _doc = _userReference.doc("fTVZ94nHyJzYIy8kRvkO").snapshots();
+    final _doc = _userReference.doc(userId).snapshots();
+    return _doc;
+  }
+
+  Future<void> setUser(String userId, Map<String, dynamic> data) async {
+    _userReference
+        .doc(userId)
+        .set(data)
+        .then((value) => print("User added"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  Future<void> updateUser(String userId, dynamic key, dynamic value) async {
+    /// key must be accurate ex. {UserData.searchedKeywords:'keyword'}
+    _userReference
+        .doc(userId)
+        .update({key: value})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> deleteUser(String userId) async {
+    _userReference
+        .doc(userId)
+        .delete()
+        .then((value) => print("User added"))
+        .catchError((error) => print("Failed to add user: $error"));
   }
 }

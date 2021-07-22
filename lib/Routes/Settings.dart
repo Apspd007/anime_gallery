@@ -7,6 +7,8 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _authBase = Provider.of<AuthBase>(context);
+    final user = Provider.of<LocalUser>(context);
+
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
     ));
@@ -15,8 +17,8 @@ class SettingsPage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           child: Text('logout'),
-          onPressed: () {
-            _authBase.signOut();
+          onPressed: () async {
+            await _authBase.signOut(user.uid, user.isAnonymous);
           },
         ),
       ),

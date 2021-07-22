@@ -1,28 +1,48 @@
+import 'package:anime_list/Model/UserDataModel.dart';
+import 'package:anime_list/Services/AuthenticationService.dart';
+import 'package:anime_list/Widgets/LoadingState.dart';
+import 'package:anime_list/Widgets/TagButton.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:anime_list/Designs/Materials/Colors.dart';
 import 'package:anime_list/Model/AnimeJsonModel.dart';
 import 'package:anime_list/Model/SearchSuggestions.dart';
 import 'package:anime_list/Routes/Pages/SearchResult.dart';
 import 'package:anime_list/Services/FirestoreDatabase.dart';
-import 'package:anime_list/Widgets/GetImage.dart';
-import 'package:anime_list/Widgets/LoadingState.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class SearchImage extends StatefulWidget {
   @override
   _SearchImageState createState() => _SearchImageState();
 }
 
-class _SearchImageState extends State<SearchImage> {
+class _SearchImageState extends State<SearchImage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  bool typing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Database _database = MyFirestoreDatabse();
-
+    final user = Provider.of<LocalUser>(context);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: DefaultUIColors.appBarColor,
     ));
@@ -31,123 +51,234 @@ class _SearchImageState extends State<SearchImage> {
       backgroundColor: Colors.transparent,
       body: Padding(
         padding: EdgeInsets.only(top: padding),
-        child: Column(
-          children: [
-            Container(
-              height: 130.h,
-              padding: EdgeInsets.symmetric(horizontal: 45),
-              width: double.infinity,
-              decoration: BoxDecoration(color: DefaultUIColors.appBarColor),
-              child: FutureBuilder<DocumentSnapshot<Object?>>(
-                  future: _database.getAllImagesAsFuture(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        Map<String, dynamic> _data =
-                            snapshot.data!.data() as Map<String, dynamic>;
-                        AnimeJsonModel data =
-                            animeJsonModelFromJson(_data, 'all_images');
-                        // AnimeListing.getAnimeSearchResult(data, 'Yamato (One Piece)');
-                        SearchSuggestions.getSuggestions(data, 'pattern');
-                        return Center(
-                          child: SizedBox(
-                            height: 48,
-                            width: 280.w,
-                            child: TypeAheadField(
-                              getImmediateSuggestions: false,
-                              hideSuggestionsOnKeyboardHide: true,
-                              debounceDuration: Duration(milliseconds: 500),
-                              textFieldConfiguration:
-                                  TextFieldConfiguration(
-                                      cursorWidth: 1.8,
-                                      cursorColor: DefaultUIColors.appBarColor,
-                                      maxLines: 1,
-                                      style: GoogleFonts.comfortaa(
-                                        fontSize: 19,
-                                      ),
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        hintText: 'Search...',
-                                        contentPadding:
-                                            EdgeInsets.symmetric(
-                                                horizontal: 20),
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.r),
-                                            borderSide: BorderSide.none),
-                                      )),
-                              suggestionsCallback: (pattern) =>
-                                  SearchSuggestions.getSuggestions(
-                                      data, pattern),
-                              itemBuilder: (context, suggestion) {
-                                return ListTile(
-                                  title: Text(suggestion.toString()),
-                                  // subtitle: Text(),
-                                );
-                              },
-                              onSuggestionSelected: (String searchTerm) {
-                                print(searchTerm);
-                                Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (_) => SearchResult(
-                                            searchTerm: searchTerm)));
-                              },
-                            ),
+        child: StreamBuilder<DocumentSnapshot<Object?>>(
+            stream: _database.getUserData(user.uid),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.connectionState == ConnectionState.active) {
+                  Map<String, dynamic> _data =
+                      snapshot.data!.data() as Map<String, dynamic>;
+                  UserDataModel data = userDataModelFromJson(_data);
+                  return Column(
+                    children: [
+                      searchAppBar(_database, user),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.only(top: 20.0, left: 20.0),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: children(data, _database),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        );
-                      } else {
-                        return Center(
-                            child: LoadingState.defaultGifLoading());
-                      }
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text((snapshot.error).toString()),
-                      );
-                    } else {
-                      return Center(child: LoadingState.defaultGifLoading());
-                    }
-                  }),
-            ),
-          ],
-        ),
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return Center(
+                    child: LoadingState.defaultGifLoading(),
+                  );
+                }
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text(snapshot.error.toString()),
+                );
+              } else {
+                return Center(child: LoadingState.defaultGifLoading());
+              }
+            }),
       ),
     );
   }
 
-  // SliverAppBar appBar() {
-  //   return SliverAppBar(
-  //     floating: true,
-  //     expandedHeight: 70.h,
-  //     toolbarHeight: 50.h,
-  //     backgroundColor: DefaultUIColors.appBarColor,
-  //     actions: [
+  List<Widget> children(UserDataModel userDataModel, Database database) {
+    List<Widget> widgetChildren = [];
+    final keywords = userDataModel.userData.searchedKeywords;
+    keywords.forEach((element) {
+      widgetChildren.add(TagButton(
+          text: element,
+          backgroundColor: Colors.white,
+          elevation: 5,
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => SearchResult(searchTerm: element)));
+          }));
+    });
 
-  //     ],
-  //   );
-  // }
+    return widgetChildren;
+  }
 
-  SliverPadding imageGrid(BuildContext context, AnimeJsonModel snapshot) {
-    // final bool dataSaver = Provider.of<AppSettingsConfig>(context).saveData;
-    // print('dataSaver: $dataSaver');
-    return SliverPadding(
-      padding: const EdgeInsets.all(10.0),
-      sliver: SliverStaggeredGrid.countBuilder(
-          crossAxisCount: 3,
-          crossAxisSpacing: 10.0,
-          mainAxisSpacing: 10.0,
-          staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-          itemCount: snapshot.anime.length,
-          itemBuilder: (BuildContext context, int index) {
-            return GetImage(
-              animeNameEng: snapshot.anime[index].animeNameEng,
-              animeNameJap: snapshot.anime[index].animeNameJap,
-              characterName: snapshot.anime[index].characterName,
-              previewImage: snapshot.anime[index].previewImage,
-              image: snapshot.anime[index].image,
-              imageSource: snapshot.anime[index].imageSource,
-            );
+  Container searchAppBar(Database _database, LocalUser user) {
+    return Container(
+      height: 130.h,
+      padding: EdgeInsets.symmetric(horizontal: 45.w),
+      width: double.infinity,
+      decoration: BoxDecoration(color: DefaultUIColors.appBarColor),
+      child: FutureBuilder<DocumentSnapshot<Object?>>(
+          future: _database.getAllImagesAsFuture(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                Map<String, dynamic> _data =
+                    snapshot.data!.data() as Map<String, dynamic>;
+                AnimeJsonModel data =
+                    animeJsonModelFromJson(_data, 'all_images');
+                // AnimeListing.getAnimeSearchResult(data, 'Yamato (One Piece)');
+                SearchSuggestions.getSuggestions(data, 'pattern');
+                return Center(
+                  child: SizedBox(
+                    height: 48.h,
+                    width: 280.w,
+                    child: DecoratedBoxTransition(
+                      decoration: DecorationTween(
+                              begin: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30.r)),
+                              end: boxDecoration())
+                          .animate(_controller),
+                      child: typeAhead(data, _database, user, context),
+                    ),
+                  ),
+                );
+              } else {
+                return demoTextField();
+              }
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text((snapshot.error).toString()),
+              );
+            } else {
+              return demoTextField();
+            }
           }),
+    );
+  }
+
+  TypeAheadField<String> typeAhead(AnimeJsonModel data, Database _database,
+      LocalUser user, BuildContext context) {
+    return TypeAheadField(
+      debounceDuration: Duration(milliseconds: 210),
+      hideOnLoading: true,
+      textFieldConfiguration: textFieldConfiguration(),
+      suggestionsCallback: (pattern) {
+        List<String> li = [];
+        if (pattern == '') return li;
+        return SearchSuggestions.getSuggestions(data, pattern);
+      },
+      itemBuilder: (context, suggestion) {
+        return ListTile(
+          title: Text(suggestion.toString()),
+        );
+      },
+      onSuggestionSelected: (String searchTerm) {
+        _controller.reverse();
+        // instanceOf.addKeyword(searchTerm);
+        _database.updateUser(user.uid, 'UserData.searchedKeywords',
+            FieldValue.arrayUnion([searchTerm]));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => SearchResult(searchTerm: searchTerm)));
+      },
+      suggestionsBoxDecoration: SuggestionsBoxDecoration(
+        hasScrollbar: false,
+        borderRadius: BorderRadius.circular(20.r),
+      ),
+      noItemsFoundBuilder: (_) {
+        return SizedBox(
+          height: 170.h,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/wallpaper/placeholder/nothing.gif',
+                  scale: 4.r,
+                ),
+                SizedBox(height: 6.h),
+                Text(
+                  'I\'ve Got Nothing...',
+                  style: GoogleFonts.comfortaa(
+                    fontSize: 10.sp,
+                    color: Colors.black87,
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  TextFieldConfiguration textFieldConfiguration() {
+    return TextFieldConfiguration(
+        onTap: () {
+          _controller.forward();
+        },
+        onSubmitted: (_) {
+          _controller.reverse();
+        },
+        cursorWidth: 1.8,
+        cursorColor: DefaultUIColors.appBarColor,
+        cursorRadius: Radius.circular(5.r),
+        maxLines: 1,
+        style: GoogleFonts.comfortaa(
+          fontSize: 19.sp,
+        ),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          hintText: 'Search...',
+          contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30.r),
+              borderSide: BorderSide.none),
+        ));
+  }
+
+  BoxDecoration boxDecoration() {
+    return BoxDecoration(boxShadow: [
+      BoxShadow(
+        color: Colors.black45,
+        blurRadius: 5,
+        spreadRadius: 1,
+      ),
+    ], borderRadius: BorderRadius.circular(30.r));
+  }
+
+  Center demoTextField() {
+    return Center(
+      child: SizedBox(
+        height: 48.h,
+        width: 280.w,
+        child: TextField(
+            cursorWidth: 1.8,
+            cursorColor: DefaultUIColors.appBarColor,
+            maxLines: 1,
+            style: GoogleFonts.comfortaa(
+              fontSize: 19.sp,
+            ),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              hintText: 'Search...',
+              contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.r),
+                  borderSide: BorderSide.none),
+            )),
+      ),
     );
   }
 }
