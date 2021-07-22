@@ -43,7 +43,6 @@ class _MusicPlayerState extends State<MusicPlayer> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        
         Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -68,22 +67,24 @@ class _MusicPlayerState extends State<MusicPlayer> {
   }
 }
 
-// class Music {
-//   static initAudio() async {
-//     AudioPlayer _audioPlayer = AudioPlayer();
-//     await _audioPlayer.play(
-//       'https://firebasestorage.googleapis.com/v0/b/anime-wallpaper-9b6b3.appspot.com/o/Memory.mp3?alt=media&token=89d887ff-78a5-426c-b546-1c2af490846a',
-//       isLocal: false,
-//     );
-//   }
+class Music {
+  late AudioPlayer _audioPlayer;
+  Music({required AudioPlayer audioPlayer}) {
+    _audioPlayer = audioPlayer;
+  }
 
-//   static pauseAudio() async {
-//     AudioPlayer _audioPlayer = AudioPlayer();
-//     await _audioPlayer.pause();
-//   }
+  Future<void> initAudio() async {
+    await _audioPlayer.play(
+      'https://firebasestorage.googleapis.com/v0/b/anime-wallpaper-9b6b3.appspot.com/o/Memory.mp3?alt=media&token=89d887ff-78a5-426c-b546-1c2af490846a',
+      isLocal: false,
+    );
+  }
 
-//   static stopAudio() async {
-//     AudioPlayer _audioPlayer = AudioPlayer();
-//     await _audioPlayer.stop();
-//   }
-// }
+  Future<void> pauseAudio() async {
+    await _audioPlayer.pause();
+  }
+
+  Future<void> stopAudio() async {
+    await _audioPlayer.stop();
+  }
+}

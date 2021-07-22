@@ -1,7 +1,9 @@
 import 'dart:ffi';
 
+import 'package:anime_list/Music/MusicPlayer.dart';
 import 'package:anime_list/Services/AuthenticationService.dart';
 import 'package:anime_list/Widgets/UITextField.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,6 +22,15 @@ class _LoginpageState extends State<Loginpage> {
   FocusNode focusNode = FocusNode(canRequestFocus: true);
 
   bool isAlreadyUser = false;
+
+  late Music _music;
+
+  @override
+  void initState() {
+    super.initState();
+    _music = Music(audioPlayer: AudioPlayer());
+    _music.initAudio();
+  }
 
   void toggleBox() {
     setState(() {
@@ -44,6 +55,7 @@ class _LoginpageState extends State<Loginpage> {
       print('invalid');
       return;
     }
+
     await _authBase.signInWithEmailPassword(
         email: emailTextController.text, password: passwordTextController.text);
   }
@@ -52,6 +64,7 @@ class _LoginpageState extends State<Loginpage> {
   void dispose() {
     emailTextController.dispose();
     passwordTextController.dispose();
+    _music.stopAudio();
     super.dispose();
   }
 
@@ -88,7 +101,26 @@ class _LoginpageState extends State<Loginpage> {
                     onSubmitPressed: register,
                   ),
           ),
-          floatingActionButton: FloatingActionButton(onPressed: () {}),
+          floatingActionButton: SizedBox(
+            width: 170,
+            child: FloatingActionButton(
+              onPressed: () async {
+                await _authBase.signInAnonymously();
+              },
+              backgroundColor: Color.fromRGBO(0, 0, 0, 170),
+              child: Text(
+                'Skip for now',
+                style: GoogleFonts.comfortaa(
+                  fontSize: 17,
+                  color: Colors.white70,
+                ),
+              ),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              splashColor: Colors.white30,
+            ),
+          ),
         ),
       ],
     );

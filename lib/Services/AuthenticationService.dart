@@ -67,6 +67,7 @@ class Auth implements AuthBase {
       {required String email, required String password}) async {
     final authResult = await _firebaseInstance.createUserWithEmailAndPassword(
         email: email, password: password);
+        await _database.setUser(authResult.user!.uid, jsonData);
     return _userFromFirebase(authResult.user);
   }
 
@@ -74,7 +75,7 @@ class Auth implements AuthBase {
       {required String email, required String password}) async {
     final authResult = await _firebaseInstance.signInWithEmailAndPassword(
         email: email, password: password);
-    // await _database.setUser(authResult.user!.uid, jsonData);
+    await _database.setUser(authResult.user!.uid, jsonData);
     return _userFromFirebase(authResult.user);
   }
 }
