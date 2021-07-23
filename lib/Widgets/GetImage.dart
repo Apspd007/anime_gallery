@@ -29,13 +29,14 @@ class GetImage extends StatefulWidget {
 
 class _GetImageState extends State<GetImage> {
   ReceivePort _port = ReceivePort();
+  late Image _myImage;
 
   @override
   void initState() {
     super.initState();
-    // _myImage = Image.network(widget.previewImageUrl);
-    // WidgetsBinding.instance!
-    //     .addPostFrameCallback((timeStamp) => precacheImageData());
+    _myImage = Image.network(widget.previewImage);
+    WidgetsBinding.instance!
+        .addPostFrameCallback((timeStamp) => precacheImageData());
     IsolateNameServer.registerPortWithName(
         _port.sendPort, 'downloader_send_port');
     _port.listen((dynamic data) {
@@ -82,29 +83,6 @@ class _GetImageState extends State<GetImage> {
     send!.send([id, status, progress]);
   }
 
-  Widget postCachedImage() {
-    return Image.network(
-      widget.previewImage,
-      loadingBuilder:
-          (BuildContext context, Widget child, ImageChunkEvent? progress) {
-        // if (progress == null) {
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.white,
-              width: 5.0,
-            ),
-            borderRadius: BorderRadius.circular(5.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: child,
-          ),
-        );
-      },
-    );
-  }
-
   void precacheImageData() async {
     await cacheImage(context, widget.previewImage);
   }
@@ -116,14 +94,13 @@ class _GetImageState extends State<GetImage> {
   // void didChangeDependencies() {
   //   super.didChangeDependencies();
   //   precacheImage(_myImage.image, context);
-  //   // precacheImage(fullImage.image, context);
   // }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: FittedBox(
-        child: postCachedImage(),
+      child: SizedBox(
+        child: cachedImages(shouldPreCache: false),
       ),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
@@ -140,6 +117,38 @@ class _GetImageState extends State<GetImage> {
                 )));
       },
       onLongPress: () {},
+    );
+  }
+
+  Image cachedImages({required bool shouldPreCache}) {
+    return Image(
+      image:
+          shouldPreCache ? _myImage.image : NetworkImage(widget.previewImage),
+          fit: BoxFit.contain,
+      errorBuilder:
+          (BuildContext context, Object object, StackTrace? stackTrace) {
+        return Image.asset('assets/wallpaper/placeholder/image.jpg');
+      },
+      loadingBuilder:
+          (BuildContext context, Widget child, ImageChunkEvent? progress) {
+        if (progress != null)
+          return SizedBox(
+            child: Image.asset('assets/wallpaper/placeholder/image.jpg'),
+          );
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.white,
+              width: 5.0,
+            ),
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: child,
+          ),
+        );
+      },
     );
   }
 }

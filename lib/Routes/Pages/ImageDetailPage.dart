@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:anime_list/Designs/Materials/Colors.dart';
+import 'package:anime_list/Services/AuthenticationService.dart';
 import 'package:anime_list/Widgets/imageDescribtion.dart';
 import 'package:anime_list/Routes/Pages/FullView.dart';
 import 'package:anime_list/Widgets/ElevatedGadientButton.dart';
@@ -7,6 +8,8 @@ import 'package:anime_list/Widgets/LoadingState.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:like_button/like_button.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -63,6 +66,7 @@ class _ImageDetailState extends State<ImageDetail> {
 
   @override
   Widget build(BuildContext context) {
+    // final user = Provider.of<LocalUser>(context);
     return Stack(
       children: [
         Container(
@@ -113,12 +117,12 @@ class _ImageDetailState extends State<ImageDetail> {
                 children: [
                   ElevatedGradientButton(
                     height: 35.h,
-                    width: 140.w,
+                    width: 120.w,
                     child: Text(
                       'Download',
                       style: TextStyle(
                           color: Color(0xFFE2E5E7),
-                          fontSize: 19.sp,
+                          fontSize: 17.sp,
                           fontWeight: FontWeight.w500),
                     ),
                     radius: 10,
@@ -127,17 +131,27 @@ class _ImageDetailState extends State<ImageDetail> {
                   ),
                   ElevatedGradientButton(
                       height: 35.h,
-                      width: 140.w,
+                      width: 120.w,
                       child: Text(
                         'View Image',
                         style: TextStyle(
                             color: Color(0xFFE2E5E7),
-                            fontSize: 19.sp,
+                            fontSize: 17.sp,
                             fontWeight: FontWeight.w500),
                       ),
                       radius: 10,
                       color: Color(0xFFfc6894),
                       onPressed: viewFullImage),
+                  LikeButton(
+                    size: 34,
+                    likeCount: 24,
+                    likeCountPadding: EdgeInsets.symmetric(horizontal: 7),
+                    circleColor: CircleColor(
+                        start: Colors.white, end: DefaultUIColors.appBarColor),
+                    bubblesColor: BubblesColor(
+                        dotPrimaryColor: DefaultUIColors.appBarColor,
+                        dotSecondaryColor: Colors.white),
+                  ),
                 ],
               ),
               /////////////////////////////////////////

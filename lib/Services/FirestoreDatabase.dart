@@ -44,7 +44,7 @@ class MyFirestoreDatabse implements Database {
         .catchError((error) => print("Failed to add user: $error"));
   }
 
-  Future<void> updateUser(String userId, dynamic key, dynamic value) async {
+  Future<void> updateUser(String userId, String key, dynamic value) async {
     /// key must be accurate ex. {UserData.searchedKeywords:'keyword'}
     _userReference
         .doc(userId)
@@ -57,7 +57,7 @@ class MyFirestoreDatabse implements Database {
     _userReference
         .doc(userId)
         .delete()
-        .then((value) => print("User added"))
+        .then((value) => print("User deleted"))
         .catchError((error) => print("Failed to add user: $error"));
   }
 }

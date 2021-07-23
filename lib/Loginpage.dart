@@ -29,7 +29,8 @@ class _LoginpageState extends State<Loginpage> {
   void initState() {
     super.initState();
     _music = Music(audioPlayer: AudioPlayer());
-    _music.initAudio();
+    WidgetsBinding.instance!
+        .addPostFrameCallback((timeStamp) => _music.initAudio());
   }
 
   void toggleBox() {

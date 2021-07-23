@@ -86,5 +86,6 @@ class Music {
 
   Future<void> stopAudio() async {
     await _audioPlayer.stop();
+    await _audioPlayer.dispose();
   }
 }

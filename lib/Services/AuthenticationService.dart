@@ -28,8 +28,11 @@ class Auth implements AuthBase {
   final _firebaseInstance = FirebaseAuth.instance;
   final Database _database = MyFirestoreDatabse();
 
-  final jsonData = {
-    "UserData": {"searchedKeywords": []}
+  final Map<String, dynamic> jsonData = {
+    "UserData": {
+      "searchedKeywords": [],
+      "favourites": [],
+    }
   };
 
   LocalUser? _userFromFirebase(User? _user) {
@@ -52,13 +55,17 @@ class Auth implements AuthBase {
 
   @override
   Future<void> signOut(String userId, bool isAnonymous) async {
-    if (isAnonymous) _database.deleteUser(userId);
+    if (isAnonymous) {
+      print('anonymous user: $isAnonymous');
+      await _database.deleteUser(userId);
+    }
     await _firebaseInstance.signOut();
   }
 
   @override
   Future<LocalUser?> signInAnonymously() async {
     final authResult = await _firebaseInstance.signInAnonymously();
+    print('anonymous user: ${authResult.user!.uid}');
     await _database.setUser(authResult.user!.uid, jsonData);
     return _userFromFirebase(authResult.user);
   }
@@ -67,7 +74,7 @@ class Auth implements AuthBase {
       {required String email, required String password}) async {
     final authResult = await _firebaseInstance.createUserWithEmailAndPassword(
         email: email, password: password);
-        await _database.setUser(authResult.user!.uid, jsonData);
+    await _database.setUser(authResult.user!.uid, jsonData);
     return _userFromFirebase(authResult.user);
   }
 
@@ -75,7 +82,7 @@ class Auth implements AuthBase {
       {required String email, required String password}) async {
     final authResult = await _firebaseInstance.signInWithEmailAndPassword(
         email: email, password: password);
-    await _database.setUser(authResult.user!.uid, jsonData);
+    // await _database.setUser(authResult.user!.uid, jsonData);
     return _userFromFirebase(authResult.user);
   }
 }
