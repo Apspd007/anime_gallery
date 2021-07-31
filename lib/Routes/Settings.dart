@@ -17,7 +17,7 @@ class SettingsPage extends StatelessWidget {
     final _database = Provider.of<Database>(context);
     final user = Provider.of<LocalUser>(context);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.black26,
+      statusBarColor: Colors.black38,
     ));
     return Scaffold(
       backgroundColor: Colors.transparent,
