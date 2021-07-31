@@ -56,7 +56,6 @@ class _HomeState extends State<Home> {
     // WidgetsBinding.instance!.addPostFrameCallback(
     //     (_) => MyRandomAnimeListing.getRandomList(_animeName));
     super.initState();
-    print('object');
   }
 
   @override

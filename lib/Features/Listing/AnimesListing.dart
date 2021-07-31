@@ -38,7 +38,7 @@ class AnimeListing {
   static List<Anime> getAnimeSearchResult(
       AnimeJsonModel data, String searchTerm) {
     List<Anime> animes = data.anime;
-    final List<Anime> searchResultList = [];
+    final Set<Anime> searchResultList = Set.from([]);
     //removing all the symbols
     RegExp regEx = new RegExp(r'(/\.?:_|[^\w\s])+');
     final newTerm = searchTerm.replaceAll(regEx, ' ');
@@ -50,22 +50,16 @@ class AnimeListing {
         if (item.characterName is List) {
           item.characterName.forEach((element) {
             if (regExp1.hasMatch(element) && regExp2.hasMatch(element)) {
-              if (searchResultList.contains(item) == false) {
-                searchResultList.add(item);
-              }
+              searchResultList.add(item);
             }
           });
           if (regExp1.hasMatch(item.animeNameEng) &&
               regExp2.hasMatch(item.animeNameEng)) {
-            if (searchResultList.contains(item) == false) {
-              searchResultList.add(item);
-            }
+            searchResultList.add(item);
           } else {
             item.tags.forEach((element) {
               if (regExp1.hasMatch(element) && regExp2.hasMatch(element)) {
-                if (searchResultList.contains(item) == false) {
-                  searchResultList.add(item);
-                }
+                searchResultList.add(item);
               }
             });
           }
@@ -73,15 +67,11 @@ class AnimeListing {
                 regExp2.hasMatch(item.characterName)) ||
             (regExp1.hasMatch(item.animeNameEng) &&
                 regExp2.hasMatch(item.animeNameEng))) {
-          if (searchResultList.contains(item) == false) {
-            searchResultList.add(item);
-          }
+          searchResultList.add(item);
         } else {
           item.tags.forEach((element) {
             if (regExp1.hasMatch(element) && regExp2.hasMatch(element)) {
-              if (searchResultList.contains(item) == false) {
-                searchResultList.add(item);
-              }
+              searchResultList.add(item);
             }
           });
         }
@@ -92,46 +82,30 @@ class AnimeListing {
         if (item.characterName is List) {
           item.characterName.forEach((element) {
             if (regExp1.hasMatch(element)) {
-              if (searchResultList.contains(item) == false) {
-                searchResultList.add(item);
-              }
+              searchResultList.add(item);
             }
           });
           if (regExp1.hasMatch(item.animeNameEng)) {
-            if (searchResultList.contains(item) == false) {
-              searchResultList.add(item);
-            }
+            searchResultList.add(item);
           } else {
             item.tags.forEach((element) {
               if (regExp1.hasMatch(element)) {
-                if (searchResultList.contains(item) == false) {
-                  searchResultList.add(item);
-                }
+                searchResultList.add(item);
               }
             });
           }
         } else if (regExp1.hasMatch(item.characterName) ||
             regExp1.hasMatch(item.animeNameEng)) {
-          if (searchResultList.contains(item) == false) {
-            searchResultList.add(item);
-          }
+          searchResultList.add(item);
         } else {
           item.tags.forEach((element) {
             if (regExp1.hasMatch(element)) {
-              if (searchResultList.contains(item) == false) {
-                searchResultList.add(item);
-              }
+              searchResultList.add(item);
             }
           });
         }
       }
     }
-    return searchResultList;
-  }
-
-  static void getRandomNum() {
-    final num = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    num.shuffle();
-    print(num);
+    return searchResultList.toList();
   }
 }
