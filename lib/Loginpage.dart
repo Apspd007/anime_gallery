@@ -1,4 +1,3 @@
-import 'package:anime_list/Features/ConfirmExitDialog.dart';
 import 'package:anime_list/Music/MusicPlayer.dart';
 import 'package:anime_list/Services/AuthenticationService.dart';
 import 'package:anime_list/Widgets/UITextField.dart';

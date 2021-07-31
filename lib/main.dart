@@ -56,17 +56,17 @@ class RootApp extends StatelessWidget {
                         title: 'Anime Wallpaper',
                         home: Container(
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Color(0xFFF6BEE5),
-                                  Color(0xFFD1FFFD),
-                                ]),
+                            image: DecorationImage(
+                              image: AssetImage('assets/wallpaper/background/rin.png'),
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                          child: ScreenUtilInit(
-                            designSize: Size(392.7, 816.7),
-                            builder: () => MyApp(),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 5.0,sigmaY: 5.0),
+                            child: ScreenUtilInit(
+                              designSize: Size(392.7, 816.7),
+                              builder: () => MyApp(),
+                            ),
                           ),
                         ),
                       ),

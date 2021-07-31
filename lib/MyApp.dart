@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
             case 1:
               return Categories();
             case 2:
-              return SearchImage();
+              return Anime();
             case 3:
               return SettingsPage();
             default:
@@ -46,14 +46,7 @@ class _MyAppState extends State<MyApp> {
   Container bottomNavigationBar() {
     return Container(
       decoration: BoxDecoration(
-        color: DefaultUIColors.bottomNavigationBarColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black45,
-            offset: Offset.zero,
-            blurRadius: 15,
-          ),
-        ],
+        color: Colors.black12,
       ),
       height: 70.h,
       width: double.infinity,
@@ -89,7 +82,7 @@ class _MyAppState extends State<MyApp> {
             GestureDetector(
               child: UIIcons(
                 icon: 'assets/home.png',
-                label: 'Search',
+                label: 'Anime Search',
                 isPressed: index == 2 ? true : false,
               ),
               onTap: () {
@@ -98,18 +91,6 @@ class _MyAppState extends State<MyApp> {
                 });
               },
             ),
-            // GestureDetector(
-            //   child: UIIcons(
-            //     icon: 'assets/home.png',
-            //     label: 'Downloads',
-            //     isPressed: index == 3 ? true : false,
-            //   ),
-            //   onTap: () {
-            //     setState(() {
-            //       index = 3;
-            //     });
-            //   },
-            // ),
             GestureDetector(
               child: UIIcons(
                 icon: 'assets/home.png',

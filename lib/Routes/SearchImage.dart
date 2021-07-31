@@ -15,12 +15,12 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class SearchImage extends StatefulWidget {
+class Anime extends StatefulWidget {
   @override
-  _SearchImageState createState() => _SearchImageState();
+  _AnimeState createState() => _AnimeState();
 }
 
-class _SearchImageState extends State<SearchImage>
+class _AnimeState extends State<Anime>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late SuggestionsBoxController suggestionsBoxController;
@@ -46,13 +46,13 @@ class _SearchImageState extends State<SearchImage>
     Database _database = Provider.of<Database>(context);
     final user = Provider.of<LocalUser>(context);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: DefaultUIColors.appBarColor,
+      statusBarColor: Colors.black26,
     ));
     // final padding = MediaQuery.of(context).padding.top;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
-        padding: EdgeInsets.only(top: 24.h),
+        padding: EdgeInsets.only(top: 32.3.h),
         child: StreamBuilder<DocumentSnapshot<Object?>>(
             stream: _database.getUserDataAsStream(user.uid),
             builder: (context, snapshot) {
@@ -131,7 +131,7 @@ class _SearchImageState extends State<SearchImage>
       height: 130.h,
       padding: EdgeInsets.symmetric(horizontal: 45.w),
       width: double.infinity,
-      decoration: BoxDecoration(color: DefaultUIColors.appBarColor),
+      decoration: BoxDecoration(color: Colors.black26),
       child: FutureBuilder<DocumentSnapshot<Object?>>(
           future: _database.getAllImagesAsFuture(),
           builder: (context, snapshot) {

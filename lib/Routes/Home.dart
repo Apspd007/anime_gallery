@@ -70,13 +70,13 @@ class _HomeState extends State<Home> {
     LocalUser user = Provider.of<LocalUser>(context);
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: DefaultUIColors.appBarColor,
+      statusBarColor: Colors.black26,
     ));
     // final padding = MediaQuery.of(context).padding.top;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
-        padding: EdgeInsets.only(top: 24.h),
+        padding: EdgeInsets.only(top: 32.3.h),
         child: changeSelection(index, _database, user),
         // index == 0
         //     ? randomImages(_database, user)
@@ -184,7 +184,7 @@ class _HomeState extends State<Home> {
       floating: true,
       expandedHeight: 70.h,
       toolbarHeight: 50.h,
-      backgroundColor: DefaultUIColors.appBarColor,
+      backgroundColor: Colors.black26,
       actions: [
         TextButton(
             style: ButtonStyle(

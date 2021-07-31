@@ -1,4 +1,3 @@
-import 'package:anime_list/Designs/Materials/Colors.dart';
 import 'package:anime_list/Model/UserDataModel.dart';
 import 'package:anime_list/Services/AuthenticationService.dart';
 import 'package:anime_list/Services/FirestoreDatabase.dart';
@@ -18,10 +17,10 @@ class SettingsPage extends StatelessWidget {
     final _database = Provider.of<Database>(context);
     final user = Provider.of<LocalUser>(context);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: DefaultUIColors.appBarColor,
+      statusBarColor: Colors.black26,
     ));
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       body: StreamBuilder<DocumentSnapshot<Object?>>(
           stream: _database.getUserDataAsStream(user.uid),
           builder: (context, snapshot) {
@@ -29,24 +28,17 @@ class SettingsPage extends StatelessWidget {
               final _data = snapshot.data!.data() as Map<String, dynamic>;
               final data = userDataModelFromJson(_data);
               return Padding(
-                padding: EdgeInsets.only(bottom: 18.h,top: 24.h),
+                padding: EdgeInsets.only(bottom: 18.h, top: 32.3.h),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
                       height: 250.h,
                       decoration: BoxDecoration(
-                          color: DefaultUIColors.appBarColor,
-                          borderRadius: BorderRadius.vertical(
-                              bottom: Radius.circular(27)),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: Offset(0, 1.8),
-                              color: Colors.black54,
-                              blurRadius: 10,
-                              spreadRadius: 1.5,
-                            ),
-                          ]),
+                        color: Colors.black38,
+                        borderRadius:
+                            BorderRadius.vertical(bottom: Radius.circular(27)),
+                      ),
                       child: user.isAnonymous
                           ? anonymousUser(data)
                           : nonAnonymousUser(data),

@@ -73,6 +73,7 @@ flutter:
     - assets/wallpaper/placeholder/waiting.gif
     - assets/wallpaper/placeholder/nothing.gif
     - assets/wallpaper/placeholder/image.jpg
+    - assets/wallpaper/background/rin.png
     - assets/AMV_Slow_Motion.gif
 
   #   - images/a_dot_burr.jpeg

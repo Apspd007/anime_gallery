@@ -15,19 +15,19 @@ class UIIcons extends StatelessWidget {
     return AnimatedContainer(
       height: 55.h,
       width: 85.h,
-      duration: Duration(milliseconds: 230),
+      duration: Duration(milliseconds: 370),
       decoration: BoxDecoration(
-        color: DefaultUIColors.bottomNavigationBarColor,
+        color: isPressed ? Colors.black38 : Colors.transparent,
         borderRadius: BorderRadius.circular(10.r),
-        boxShadow: isPressed
-            ? [
-                BoxShadow(
-                  color: Colors.black45,
-                  offset: Offset.zero,
-                  blurRadius: 4.r,
-                ),
-              ]
-            : [],
+        // boxShadow: isPressed
+        //     ? [
+        //         // BoxShadow(
+        //         //   color: Colors.black45,
+        //         //   offset: Offset.zero,
+        //         //   blurRadius: 4.r,
+        //         // ),
+        //       ]
+        //     : [],
       ),
       child: Center(
         child: Padding(

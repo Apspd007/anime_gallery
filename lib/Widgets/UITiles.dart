@@ -18,7 +18,7 @@ class UITiles extends StatelessWidget {
           height: 70,
           padding: EdgeInsets.symmetric(horizontal: 20.0),
           decoration: BoxDecoration(
-            color: Colors.red[100],
+            color: Colors.black26,
             borderRadius: BorderRadius.circular(5),
           ),
           child: Align(
@@ -26,6 +26,7 @@ class UITiles extends StatelessWidget {
             child: Text(
               text,
               style: GoogleFonts.comfortaa(
+                color: Colors.white,
                 fontSize: 20,
               ),
             ),
@@ -33,7 +34,7 @@ class UITiles extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(5),
         highlightColor: Colors.transparent,
-        overlayColor: MaterialStateProperty.all<Color>(Color(0xFFFFFFFF)),
+        overlayColor: MaterialStateProperty.all<Color>(Colors.white24),
         splashFactory: InkSplash.splashFactory,
         onTap: onPressed,
       ),
