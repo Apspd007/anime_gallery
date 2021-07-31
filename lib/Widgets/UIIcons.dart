@@ -14,7 +14,7 @@ class UIIcons extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       height: 55.h,
-      width: 70.h,
+      width: 85.h,
       duration: Duration(milliseconds: 230),
       decoration: BoxDecoration(
         color: DefaultUIColors.bottomNavigationBarColor,

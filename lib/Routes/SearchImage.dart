@@ -23,7 +23,8 @@ class SearchImage extends StatefulWidget {
 class _SearchImageState extends State<SearchImage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
+  late SuggestionsBoxController suggestionsBoxController;
+  final _formKey = GlobalKey<FormState>();
   bool typing = false;
 
   @override
@@ -31,6 +32,7 @@ class _SearchImageState extends State<SearchImage>
     super.initState();
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    suggestionsBoxController = SuggestionsBoxController();
   }
 
   @override
@@ -41,18 +43,18 @@ class _SearchImageState extends State<SearchImage>
 
   @override
   Widget build(BuildContext context) {
-    Database _database = MyFirestoreDatabse();
+    Database _database = Provider.of<Database>(context);
     final user = Provider.of<LocalUser>(context);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: DefaultUIColors.appBarColor,
     ));
-    final padding = MediaQuery.of(context).padding.top;
+    // final padding = MediaQuery.of(context).padding.top;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
-        padding: EdgeInsets.only(top: padding),
+        padding: EdgeInsets.only(top: 24.h),
         child: StreamBuilder<DocumentSnapshot<Object?>>(
-            stream: _database.getUserData(user.uid),
+            stream: _database.getUserDataAsStream(user.uid),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 if (snapshot.connectionState == ConnectionState.active) {
@@ -76,7 +78,7 @@ class _SearchImageState extends State<SearchImage>
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
-                                      children: children(data, _database),
+                                      children: children(data, _database, user),
                                     ),
                                   ),
                                 ),
@@ -104,7 +106,8 @@ class _SearchImageState extends State<SearchImage>
     );
   }
 
-  List<Widget> children(UserDataModel userDataModel, Database database) {
+  List<Widget> children(
+      UserDataModel userDataModel, Database database, LocalUser user) {
     List<Widget> widgetChildren = [];
     final keywords = userDataModel.userData.searchedKeywords;
     keywords.forEach((element) {
@@ -114,7 +117,9 @@ class _SearchImageState extends State<SearchImage>
           elevation: 5,
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => SearchResult(searchTerm: element)));
+                builder: (_) => SearchResult(
+                      searchTerm: element,
+                    )));
           }));
     });
 
@@ -169,6 +174,8 @@ class _SearchImageState extends State<SearchImage>
   TypeAheadField<String> typeAhead(AnimeJsonModel data, Database _database,
       LocalUser user, BuildContext context) {
     return TypeAheadField(
+      key: _formKey,
+      suggestionsBoxController: suggestionsBoxController,
       debounceDuration: Duration(milliseconds: 210),
       hideOnLoading: true,
       textFieldConfiguration: textFieldConfiguration(),
@@ -188,7 +195,9 @@ class _SearchImageState extends State<SearchImage>
         _database.updateUser(user.uid, 'UserData.searchedKeywords',
             FieldValue.arrayUnion([searchTerm]));
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => SearchResult(searchTerm: searchTerm)));
+            builder: (_) => SearchResult(
+                  searchTerm: searchTerm,
+                )));
       },
       suggestionsBoxDecoration: SuggestionsBoxDecoration(
         hasScrollbar: false,

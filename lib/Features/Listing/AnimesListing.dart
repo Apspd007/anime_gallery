@@ -1,4 +1,5 @@
 import 'package:anime_list/Model/AnimeJsonModel.dart';
+import 'package:anime_list/Model/UserDataModel.dart';
 // import 'dart:math' as math;
 
 class AnimeListing {
@@ -9,46 +10,38 @@ class AnimeListing {
       final Anime anime = Anime.fromJson(item);
       animeList.add(anime);
     }
-    // final List<dynamic> list = data.values.toList();
-    // print(list[0]);
-    // print(list[1][0]);
     animeList.shuffle();
     return animeList;
-
-    // final AnimeModel listAnime = AnimeModel.fromJson(list[1][0]);
-    // print(listAnime.characterName);
-    // final BG res = BG.fromJson(list[0][0]);
-    // final BG res2 = BG.fromJson(list[1][0]);
-    // print('res:${res.boy}');
-    // print('res:${res2.boy}');
   }
 
-  // // return only characters and with no accuracy
-  // static List<Anime> getCharacterList(AnimeJsonModel data, String character) {
-  //   List<Anime> animes = data.anime;
-  //   final List<Anime> characterList = [];
+  static List<Anime> getRecentList(Map<String, dynamic> data) {
+    List<dynamic> animes = data.values.toList();
+    final List<Anime> animeList = [];
+    for (var item in animes[0]) {
+      final Anime anime = Anime.fromJson(item);
+      animeList.add(anime);
+    }
+    return animeList.reversed.toList();
+  }
 
-  //   for (var item in animes) {
-  //     if (item.characterName is List) {
-  //       if (item.characterName.contains(character)) {
-  //         characterList.add(item);
-  //       }
-  //     } else {
-  //       if (item.characterName == character) {
-  //         characterList.add(item);
-  //       }
-  //     }
-  //   }
-  //   return characterList;
-  // }
+  static List<Anime> getFavouriteList(UserDataModel dataModel) {
+    final list = dataModel.userData.favourites;
+    List<Anime> animeList = [];
+    for (var item in list) {
+      final Anime anime = Anime.fromJson(item);
+      animeList.add(anime);
+    }
+    return animeList;
+  }
+
   // return list list with any search keyword
   static List<Anime> getAnimeSearchResult(
       AnimeJsonModel data, String searchTerm) {
     List<Anime> animes = data.anime;
     final List<Anime> searchResultList = [];
     //removing all the symbols
-    RegExp regEx = new RegExp(r'(?:_|[^\w\s])+');
-    final newTerm = searchTerm.replaceAll(regEx, '');
+    RegExp regEx = new RegExp(r'(/\.?:_|[^\w\s])+');
+    final newTerm = searchTerm.replaceAll(regEx, ' ');
     final newTermList = newTerm.split(' ');
     if (newTermList.length >= 2) {
       RegExp regExp1 = RegExp(newTerm.split(' ')[0]);
@@ -57,17 +50,40 @@ class AnimeListing {
         if (item.characterName is List) {
           item.characterName.forEach((element) {
             if (regExp1.hasMatch(element) && regExp2.hasMatch(element)) {
-              searchResultList.add(item);
+              if (searchResultList.contains(item) == false) {
+                searchResultList.add(item);
+              }
             }
           });
-          // if (item.characterName.contains(searchTerm)) {
-          //   searchResultList.add(item);
-          // }
+          if (regExp1.hasMatch(item.animeNameEng) &&
+              regExp2.hasMatch(item.animeNameEng)) {
+            if (searchResultList.contains(item) == false) {
+              searchResultList.add(item);
+            }
+          } else {
+            item.tags.forEach((element) {
+              if (regExp1.hasMatch(element) && regExp2.hasMatch(element)) {
+                if (searchResultList.contains(item) == false) {
+                  searchResultList.add(item);
+                }
+              }
+            });
+          }
         } else if ((regExp1.hasMatch(item.characterName) &&
                 regExp2.hasMatch(item.characterName)) ||
             (regExp1.hasMatch(item.animeNameEng) &&
                 regExp2.hasMatch(item.animeNameEng))) {
-          searchResultList.add(item);
+          if (searchResultList.contains(item) == false) {
+            searchResultList.add(item);
+          }
+        } else {
+          item.tags.forEach((element) {
+            if (regExp1.hasMatch(element) && regExp2.hasMatch(element)) {
+              if (searchResultList.contains(item) == false) {
+                searchResultList.add(item);
+              }
+            }
+          });
         }
       }
     } else if (newTermList.length == 1) {
@@ -76,15 +92,37 @@ class AnimeListing {
         if (item.characterName is List) {
           item.characterName.forEach((element) {
             if (regExp1.hasMatch(element)) {
-              searchResultList.add(item);
+              if (searchResultList.contains(item) == false) {
+                searchResultList.add(item);
+              }
             }
           });
-          if (item.animeNameEng.contains(searchTerm)) {
-            searchResultList.add(item);
+          if (regExp1.hasMatch(item.animeNameEng)) {
+            if (searchResultList.contains(item) == false) {
+              searchResultList.add(item);
+            }
+          } else {
+            item.tags.forEach((element) {
+              if (regExp1.hasMatch(element)) {
+                if (searchResultList.contains(item) == false) {
+                  searchResultList.add(item);
+                }
+              }
+            });
           }
         } else if (regExp1.hasMatch(item.characterName) ||
             regExp1.hasMatch(item.animeNameEng)) {
-          searchResultList.add(item);
+          if (searchResultList.contains(item) == false) {
+            searchResultList.add(item);
+          }
+        } else {
+          item.tags.forEach((element) {
+            if (regExp1.hasMatch(element)) {
+              if (searchResultList.contains(item) == false) {
+                searchResultList.add(item);
+              }
+            }
+          });
         }
       }
     }

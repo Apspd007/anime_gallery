@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class UITextField extends StatelessWidget {
-  TextEditingController controller;
-  FocusNode? focusNode;
-  TextInputAction textInputAction;
-  String hintText;
-  Function(String)? onSubmitted;
+  final TextEditingController controller;
+  final FocusNode? focusNode;
+  final TextInputAction textInputAction;
+  final String hintText;
+  final Function(String)? onSubmitted;
   UITextField({
     required this.controller,
     required this.onSubmitted,

@@ -14,6 +14,9 @@ class MyDownloader extends StatefulWidget {
 }
 
 class _MyDownloaderState extends State<MyDownloader> {
+
+
+  
   Future<void> downloadFileFromUrl({required String fileUrl}) async {
     final status = Permission.storage.request();
     if (await status.isGranted) {
@@ -37,6 +40,7 @@ class _MyDownloaderState extends State<MyDownloader> {
   @override
   void initState() {
     super.initState();
+    print('initiated');
     WidgetsBinding.instance!.addPostFrameCallback(
         (_) => downloadFileFromUrl(fileUrl: widget.fileUrl));
     // downloadFileFromUrl(fileUrl: widget.fileUrl);

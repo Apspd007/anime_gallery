@@ -12,8 +12,9 @@ class GetImage extends StatefulWidget {
   final String image;
   final String imageSource;
   final dynamic characterName;
-  final String animeNameEng;
-  final String animeNameJap;
+  final dynamic animeNameEng;
+  final dynamic animeNameJap;
+  final dynamic tags;
   GetImage({
     required this.animeNameEng,
     required this.animeNameJap,
@@ -21,6 +22,7 @@ class GetImage extends StatefulWidget {
     required this.previewImage,
     required this.image,
     required this.imageSource,
+    required this.tags,
   });
 
   @override
@@ -59,7 +61,7 @@ class _GetImageState extends State<GetImage> {
       if (exterDir != null) {
         FlutterDownloader.enqueue(
           url: fileUrl,
-          savedDir: exterDir.path,
+          savedDir: '/storage/emulated/0/',
           showNotification: true,
           openFileFromNotification: true,
         );
@@ -99,32 +101,34 @@ class _GetImageState extends State<GetImage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: SizedBox(
-        child: cachedImages(shouldPreCache: false),
-      ),
+      child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: 100, minWidth: 100),
+          child: cachedImages()),
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ImageDetail(
-                  engAnimeName: widget.animeNameEng,
-                  japAnimeName: widget.animeNameJap,
-                  chracter: widget.characterName,
-                  fullImageUrl: widget.image,
-                  imageDetailUrl: widget.imageSource,
-                  onPressed: () {
-                    downloadFileFromUrl(fileUrl: widget.image);
-                    // MyDownloader(fileUrl: widget.fullImageUrl);
-                  },
-                )));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+              builder: (context) => ImageDetail(
+                    animeNameEng: widget.animeNameEng,
+                    animeNameJap: widget.animeNameJap,
+                    characterName: widget.characterName,
+                    image: widget.image,
+                    imageSource: widget.imageSource,
+                    previewImage: widget.previewImage,
+                    tags: widget.tags,
+                    onPressed: () {
+                      downloadFileFromUrl(fileUrl: widget.image);
+                    },
+                  )),
+        );
       },
       onLongPress: () {},
     );
   }
 
-  Image cachedImages({required bool shouldPreCache}) {
+  Image cachedImages() {
     return Image(
-      image:
-          shouldPreCache ? _myImage.image : NetworkImage(widget.previewImage),
-          fit: BoxFit.contain,
+      image: _myImage.image,
+      fit: BoxFit.cover,
       errorBuilder:
           (BuildContext context, Object object, StackTrace? stackTrace) {
         return Image.asset('assets/wallpaper/placeholder/image.jpg');
@@ -137,10 +141,7 @@ class _GetImageState extends State<GetImage> {
           );
         return DecoratedBox(
           decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.white,
-              width: 5.0,
-            ),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(5.0),
           ),
           child: Padding(

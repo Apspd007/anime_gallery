@@ -35,13 +35,15 @@ class Anime {
     required this.animeNameJap,
     required this.characterName,
     required this.imageSource,
+    required this.tags,
     required this.previewImage,
     required this.image,
   });
 
-  String animeNameEng;
-  String animeNameJap;
+  dynamic animeNameEng;
+  dynamic animeNameJap;
   dynamic characterName;
+  dynamic tags;
   String imageSource;
   String previewImage;
   String image;
@@ -50,6 +52,7 @@ class Anime {
         animeNameEng: json["anime_name_eng"],
         animeNameJap: json["anime_name_jap"],
         characterName: json["character_name"],
+        tags: json["themes"],
         imageSource: json["image_source"],
         previewImage: json["preview_image"],
         image: json["image"],
@@ -59,6 +62,7 @@ class Anime {
         "anime_name_eng": animeNameEng,
         "anime_name_jap": animeNameJap,
         "character_name": characterName,
+        "themes": tags,
         "image_source": imageSource,
         "preview_image": previewImage,
         "image": image,

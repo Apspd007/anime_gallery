@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:provider/provider.dart';
 
 class SearchResult extends StatefulWidget {
   final String searchTerm;
@@ -22,7 +23,7 @@ class SearchResult extends StatefulWidget {
 class _SearchResultState extends State<SearchResult> {
   @override
   Widget build(BuildContext context) {
-    Database _database = MyFirestoreDatabse();
+    Database _database = Provider.of<Database>(context);
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: DefaultUIColors.appBarColor,
@@ -74,8 +75,6 @@ class _SearchResultState extends State<SearchResult> {
   }
 
   SliverPadding imageGrid(BuildContext context, List<Anime> snapshot) {
-    // final bool dataSaver = Provider.of<AppSettingsConfig>(context).saveData;
-    // print('dataSaver: $dataSaver');
     return SliverPadding(
       padding: const EdgeInsets.all(10.0),
       sliver: SliverStaggeredGrid.countBuilder(
@@ -91,6 +90,7 @@ class _SearchResultState extends State<SearchResult> {
               characterName: snapshot[index].characterName,
               previewImage: snapshot[index].previewImage,
               image: snapshot[index].image,
+              tags: snapshot[index].tags,
               imageSource: snapshot[index].imageSource,
             );
           }),

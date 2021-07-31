@@ -4,12 +4,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 class LocalUser {
   String uid;
   String? displayName;
+  String? displayImage;
   String? email;
+  bool? emailVerified;
   bool isAnonymous;
   LocalUser({
     required this.uid,
-    required this.displayName,
-    required this.email,
+    this.displayName,
+    this.displayImage,
+    this.email,
+    this.emailVerified,
     required this.isAnonymous,
   });
 }
@@ -21,26 +25,26 @@ abstract class AuthBase {
   Future<LocalUser?> signInWithEmailPassword(
       {required String email, required String password});
   Future<LocalUser?> registerWithEmailPassword(
-      {required String email, required String password});
+      {required String email, required String password, required String name});
 }
 
 class Auth implements AuthBase {
   final _firebaseInstance = FirebaseAuth.instance;
   final Database _database = MyFirestoreDatabse();
 
-  final Map<String, dynamic> jsonData = {
-    "UserData": {
-      "searchedKeywords": [],
-      "favourites": [],
-    }
-  };
+  Map<String, dynamic> jsonData(String? name) => {
+        "UserData": {
+          "searchedKeywords": [],
+          "favourites": [],
+          "displayName": name == null ? '' : name,
+          "displayImage": 'https://s3.zerochan.net/240/32/06/3395332.jpg',
+        }
+      };
 
   LocalUser? _userFromFirebase(User? _user) {
     if (_user != null) {
       return LocalUser(
         uid: _user.uid,
-        displayName: _user.displayName,
-        email: _user.email,
         isAnonymous: _user.isAnonymous,
       );
     } else
@@ -65,16 +69,17 @@ class Auth implements AuthBase {
   @override
   Future<LocalUser?> signInAnonymously() async {
     final authResult = await _firebaseInstance.signInAnonymously();
-    print('anonymous user: ${authResult.user!.uid}');
-    await _database.setUser(authResult.user!.uid, jsonData);
+    await _database.setUser(authResult.user!.uid, jsonData(null));
     return _userFromFirebase(authResult.user);
   }
 
   Future<LocalUser?> registerWithEmailPassword(
-      {required String email, required String password}) async {
+      {required String email,
+      required String password,
+      required String name}) async {
     final authResult = await _firebaseInstance.createUserWithEmailAndPassword(
         email: email, password: password);
-    await _database.setUser(authResult.user!.uid, jsonData);
+    await _database.setUser(authResult.user!.uid, jsonData(name));
     return _userFromFirebase(authResult.user);
   }
 
@@ -82,7 +87,6 @@ class Auth implements AuthBase {
       {required String email, required String password}) async {
     final authResult = await _firebaseInstance.signInWithEmailAndPassword(
         email: email, password: password);
-    // await _database.setUser(authResult.user!.uid, jsonData);
     return _userFromFirebase(authResult.user);
   }
 }

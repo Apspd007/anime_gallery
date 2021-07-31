@@ -1,8 +1,10 @@
+// To parse this JSON data, do
+//
+//     final userDataModel = userDataModelFromJson(jsonString);
+
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
-
-UserDataModel userDataModelFromJson(data) =>
+UserDataModel userDataModelFromJson(Map<String, dynamic> data) =>
     UserDataModel.fromJson(data);
 
 String userDataModelToJson(UserDataModel data) => json.encode(data.toJson());
@@ -26,16 +28,26 @@ class UserDataModel {
 class UserData {
   UserData({
     required this.searchedKeywords,
+    required this.favourites,
+    required this.displayImage,
+    required this.displayName,
   });
 
-  List<String> searchedKeywords;
+  List<dynamic> searchedKeywords;
+  List<dynamic> favourites;
+  String displayName;
+  String displayImage;
 
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
-        searchedKeywords:
-            List<String>.from(json["searchedKeywords"].map((x) => x)),
+        searchedKeywords: json["searchedKeywords"],
+        favourites: json["favourites"],
+        displayName: json["displayName"],
+        displayImage: json["displayImage"],
       );
 
   Map<String, dynamic> toJson() => {
         "searchedKeywords": List<dynamic>.from(searchedKeywords.map((x) => x)),
+        "favourites": List<dynamic>.from(favourites.map((x) => x)),
+        "displayImage": displayImage
       };
 }
