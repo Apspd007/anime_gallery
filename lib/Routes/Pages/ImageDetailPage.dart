@@ -12,6 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:like_button/like_button.dart';
@@ -140,39 +141,45 @@ class _ImageDetailState extends State<ImageDetail> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.black26,
+    ));
     final database = Provider.of<Database>(context);
     final user = Provider.of<LocalUser>(context);
-    return Stack(
-      children: [
-        Scaffold(
-          backgroundColor: Colors.white,
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/wallpaper/background/rin.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
           appBar: AppBar(
-            backgroundColor: DefaultUIColors.appBarColor,
+            backgroundColor: Colors.transparent,
           ),
-          body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.w),
-            child: SizedBox(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: StreamBuilder<DocumentSnapshot<Object?>>(
-                    stream: database.getUserDataAsStream(user.uid),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.active) {
-                        final _data =
-                            snapshot.data!.data() as Map<String, dynamic>;
-                        final data = userDataModelFromJson(_data);
-                        return viewImage(context, data, database, user);
-                      } else {
-                        return Center(child: LoadingState.defaultGifLoading());
-                      }
-                    }),
-              ),
+          body: SizedBox(
+            child: DecoratedBox(
+              decoration:
+                  BoxDecoration(color: Color.fromRGBO(255, 255, 255, 15)),
+              child: StreamBuilder<DocumentSnapshot<Object?>>(
+                  stream: database.getUserDataAsStream(user.uid),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.active) {
+                      final _data =
+                          snapshot.data!.data() as Map<String, dynamic>;
+                      final data = userDataModelFromJson(_data);
+                      return viewImage(context, data, database, user);
+                    } else {
+                      return Center(child: LoadingState.defaultGifLoading());
+                    }
+                  }),
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -199,82 +206,91 @@ class _ImageDetailState extends State<ImageDetail> {
                 onTap: _showToast,
               ),
               SizedBox(height: 20.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedGradientButton(
-                    height: 35.h,
-                    width: 120.w,
-                    child: Text(
-                      'Download',
-                      style: TextStyle(
-                          color: Color(0xFFE2E5E7),
-                          fontSize: 17.sp,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    radius: 10,
-                    color: Color(0xFFFA4584),
-                    onPressed: widget.onPressed,
-                  ),
-                  ElevatedGradientButton(
-                      height: 35.h,
-                      width: 120.w,
-                      child: Text(
-                        'Set as Profile',
-                        style: TextStyle(
-                            color: Color(0xFFE2E5E7),
-                            fontSize: 17.sp,
-                            fontWeight: FontWeight.w500),
-                      ),
-                      radius: 10,
-                      color: Color(0xFFFA4584),
-                      onPressed: () {
-                        setAsProfile(database, user);
-                      }),
-                  LikeButton(
-                    isLiked: isLiked,
-                    likeBuilder: (isLiked) {
-                      return isLiked
-                          ? Icon(
-                              Icons.favorite,
-                              color: Color(0xFFFA4584),
-                              size: 34,
-                            )
-                          : Icon(
-                              Icons.favorite_border_rounded,
-                              color: Colors.blueGrey,
-                              size: 34,
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedGradientButton(
+                          height: 35.h,
+                          width: 120.w,
+                          child: Text(
+                            'Download',
+                            style: TextStyle(
+                                color: Color(0xFFE2E5E7),
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          radius: 10,
+                          color: Color(0xFFFA4584),
+                          onPressed: widget.onPressed,
+                        ),
+                        ElevatedGradientButton(
+                            height: 35.h,
+                            width: 120.w,
+                            child: Text(
+                              'Set as Profile',
+                              style: TextStyle(
+                                  color: Color(0xFFE2E5E7),
+                                  fontSize: 17.sp,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            radius: 10,
+                            color: Color(0xFFFA4584),
+                            onPressed: () {
+                              setAsProfile(database, user);
+                            }),
+                        LikeButton(
+                          isLiked: isLiked,
+                          likeBuilder: (isLiked) {
+                            return isLiked
+                                ? Icon(
+                                    Icons.favorite,
+                                    color: Color(0xFFFA4584),
+                                    size: 34,
+                                  )
+                                : Icon(
+                                    Icons.favorite_border_rounded,
+                                    color: Colors.blueGrey,
+                                    size: 34,
+                                  );
+                          },
+                          circleColor: CircleColor(
+                              start: Colors.white,
+                              end: DefaultUIColors.appBarColor),
+                          bubblesColor: BubblesColor(
+                              dotPrimaryColor: DefaultUIColors.appBarColor,
+                              dotSecondaryColor: Colors.white),
+                          // onTap: onLikeButtonTapped,
+                          onTap: (isLiked) async {
+                            return onLikeButtonTapped(
+                              isLiked: isLiked,
+                              database: database,
+                              user: user,
+                              animeImage: anime,
                             );
-                    },
-                    circleColor: CircleColor(
-                        start: Colors.white, end: DefaultUIColors.appBarColor),
-                    bubblesColor: BubblesColor(
-                        dotPrimaryColor: DefaultUIColors.appBarColor,
-                        dotSecondaryColor: Colors.white),
-                    // onTap: onLikeButtonTapped,
-                    onTap: (isLiked) async {
-                      return onLikeButtonTapped(
-                        isLiked: isLiked,
-                        database: database,
-                        user: user,
-                        animeImage: anime,
-                      );
-                    },
-                  ),
-                ],
+                          },
+                        ),
+                      ],
+                    ),
+                    /////////////////////////////////////////
+                    SizedBox(height: 20.h),
+                    // image describtion
+                    ImageDescribtion(
+                      engName: widget.animeNameEng,
+                      japName: widget.animeNameJap,
+                      characters: widget.characterName,
+                      tags: widget.tags,
+                    ),
+                    SizedBox(height: 20.h),
+                    sourceImage(),
+                    SizedBox(height: 20.h),
+                  ],
+                ),
               ),
-              /////////////////////////////////////////
-              SizedBox(height: 20.h),
-              // image describtion
-              ImageDescribtion(
-                engName: widget.animeNameEng,
-                japName: widget.animeNameJap,
-                characters: widget.characterName,
-                tags: widget.tags,
-              ),
-              SizedBox(height: 20.h),
-              sourceImage(),
-              SizedBox(height: 20.h),
             ],
           ),
         );

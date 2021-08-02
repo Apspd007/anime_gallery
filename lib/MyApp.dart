@@ -1,7 +1,5 @@
-import 'dart:ui';
 import 'package:anime_list/Features/ConfirmExitDialog.dart';
 import 'package:anime_list/Widgets/UIIcons.dart';
-import 'package:anime_list/Designs/Materials/Colors.dart';
 import 'package:anime_list/Routes/Categaries.dart';
 import 'package:anime_list/Routes/Home.dart';
 import 'package:anime_list/Routes/Settings.dart';

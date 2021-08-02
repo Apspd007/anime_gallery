@@ -1,4 +1,3 @@
-import 'package:anime_list/Designs/Materials/Colors.dart';
 import 'package:anime_list/Features/For_HomeScreen/AppbarButton.dart';
 import 'package:anime_list/Model/AnimeJsonModel.dart';
 import 'package:anime_list/Features/Listing/AnimesListing.dart';

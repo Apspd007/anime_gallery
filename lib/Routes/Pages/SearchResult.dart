@@ -1,4 +1,4 @@
-import 'package:anime_list/Designs/Materials/Colors.dart';
+import 'dart:ui';
 import 'package:anime_list/Model/AnimeJsonModel.dart';
 import 'package:anime_list/Features/Listing/AnimesListing.dart';
 import 'package:anime_list/Services/FirestoreDatabase.dart';
@@ -26,52 +26,52 @@ class _SearchResultState extends State<SearchResult> {
     Database _database = Provider.of<Database>(context);
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: DefaultUIColors.appBarColor,
+      statusBarColor: Colors.black26,
     ));
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFF6BEE5),
-              Color(0xFFD1FFFD),
-            ]),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: DefaultUIColors.appBarColor,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/wallpaper/background/rin.png'),
+            fit: BoxFit.cover,
+          ),
         ),
-        body: FutureBuilder<DocumentSnapshot<Object?>>(
-            future: _database.getAllImagesAsFuture(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  Map<String, dynamic> _data =
-                      snapshot.data!.data() as Map<String, dynamic>;
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+            ),
+            body: FutureBuilder<DocumentSnapshot<Object?>>(
+                future: _database.getAllImagesAsFuture(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      Map<String, dynamic> _data =
+                          snapshot.data!.data() as Map<String, dynamic>;
 
-                  AnimeJsonModel data =
-                      animeJsonModelFromJson(_data, 'all_images');
-                  List<Anime> characterList = AnimeListing.getAnimeSearchResult(
-                      data, widget.searchTerm);
+                      AnimeJsonModel data =
+                          animeJsonModelFromJson(_data, 'all_images');
+                      List<Anime> characterList =
+                          AnimeListing.getAnimeSearchResult(
+                              data, widget.searchTerm);
 
-                  return CustomScrollView(slivers: [
-                    imageGrid(context, characterList),
-                  ]);
-                } else {
-                  return Center(child: LoadingState.defaultGifLoading());
-                }
-              } else if (snapshot.hasError) {
-                return Center(
-                  child: Text((snapshot.error).toString()),
-                );
-              } else {
-                return Center(child: LoadingState.defaultGifLoading());
-              }
-            }),
-      ),
-    );
+                      return CustomScrollView(slivers: [
+                        imageGrid(context, characterList),
+                      ]);
+                    } else {
+                      return Center(child: LoadingState.defaultGifLoading());
+                    }
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text((snapshot.error).toString()),
+                    );
+                  } else {
+                    return Center(child: LoadingState.defaultGifLoading());
+                  }
+                }),
+          ),
+        ));
   }
 
   SliverPadding imageGrid(BuildContext context, List<Anime> snapshot) {
