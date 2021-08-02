@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:anime_list/Routes/Pages/ImageDetailPage.dart';
-// import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'dart:isolate';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -85,18 +85,18 @@ class _GetImageState extends State<GetImage> {
     send!.send([id, status, progress]);
   }
 
-  // void precacheImageData() async {
-  //   await cacheImage(context, widget.previewImage);
-  // }
+  void precacheImageData() async {
+    await cacheImage(context, widget.previewImage);
+  }
 
-  // Future cacheImage(BuildContext context, String url) =>
-  //     precacheImage(CachedNetworkImageProvider(url), context);
+  Future cacheImage(BuildContext context, String url) =>
+      precacheImage(CachedNetworkImageProvider(url), context);
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   precacheImage(_myImage.image, context);
-  // }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(_myImage.image, context);
+  }
 
   @override
   Widget build(BuildContext context) {
