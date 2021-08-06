@@ -20,12 +20,12 @@ class Anime extends StatefulWidget {
   _AnimeState createState() => _AnimeState();
 }
 
-class _AnimeState extends State<Anime>
-    with SingleTickerProviderStateMixin {
+class _AnimeState extends State<Anime> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late SuggestionsBoxController suggestionsBoxController;
   final _formKey = GlobalKey<FormState>();
   bool typing = false;
+  late double padding;
 
   @override
   void initState() {
@@ -42,6 +42,12 @@ class _AnimeState extends State<Anime>
   }
 
   @override
+  void didChangeDependencies() {
+    padding = MediaQuery.of(context).padding.top;
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Database _database = Provider.of<Database>(context);
     final user = Provider.of<LocalUser>(context);
@@ -52,7 +58,7 @@ class _AnimeState extends State<Anime>
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
-        padding: EdgeInsets.only(top: 32.3.h),
+        padding: EdgeInsets.only(top: padding),
         child: StreamBuilder<DocumentSnapshot<Object?>>(
             stream: _database.getUserDataAsStream(user.uid),
             builder: (context, snapshot) {

@@ -26,6 +26,8 @@ class _CategoriesState extends State<Categories>
   late SuggestionsBoxController suggestionsBoxController;
   final _formKey = GlobalKey<FormState>();
   bool typing = false;
+  late double padding;
+
 
   @override
   void initState() {
@@ -42,6 +44,12 @@ class _CategoriesState extends State<Categories>
   }
 
   @override
+  void didChangeDependencies() {
+    padding = MediaQuery.of(context).padding.top;
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Database _database = Provider.of<Database>(context);
     final user = Provider.of<LocalUser>(context);
@@ -52,7 +60,7 @@ class _CategoriesState extends State<Categories>
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
-        padding: EdgeInsets.only(top: 32.3.h),
+        padding: EdgeInsets.only(top: padding),
         child: StreamBuilder<DocumentSnapshot<Object?>>(
             stream: _database.getUserDataAsStream(user.uid),
             builder: (context, snapshot) {
@@ -110,7 +118,7 @@ class _CategoriesState extends State<Categories>
   List<Widget> children(
       UserDataModel userDataModel, Database database, LocalUser user) {
     List<Widget> widgetChildren = [];
-    final keywords = userDataModel.userData.searchedKeywords;
+    final keywords = userDataModel.userData.searchedThemeKeywords;
     keywords.forEach((element) {
       widgetChildren.add(TagButton(
           text: element,

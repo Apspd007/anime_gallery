@@ -112,6 +112,7 @@ class _ImageDescribtionState extends State<ImageDescribtion> {
     final List<Widget> children = [];
     list.forEach((element) {
       children.add(TagButton(
+          backgroundColor: Color(0xFFFF8B23),
           text: element,
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
@@ -129,6 +130,7 @@ class _ImageDescribtionState extends State<ImageDescribtion> {
       final List<Widget> children = [];
       list.forEach((element) {
         children.add(TagButton(
+            backgroundColor: Color(0xFFFF7E5D),
             text: element,
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
@@ -141,6 +143,7 @@ class _ImageDescribtionState extends State<ImageDescribtion> {
     } else {
       return [
         TagButton(
+            backgroundColor: Color(0xFFFF7E5D),
             text: widget.engName,
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(

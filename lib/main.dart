@@ -4,6 +4,7 @@ import 'package:anime_list/Model/UserDataModel.dart';
 import 'package:anime_list/MyApp.dart';
 import 'package:anime_list/Services/AuthenticationService.dart';
 import 'package:anime_list/Services/FirestoreDatabase.dart';
+import 'package:anime_list/Video/VideoPlayer.dart';
 import 'package:anime_list/Widgets/LoadingState.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -122,7 +123,7 @@ class RootApp extends StatelessWidget {
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
-              title: 'Anime Wallpaper',
+              title: 'Anime Gallery',
               home: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -135,6 +136,7 @@ class RootApp extends StatelessWidget {
                 ),
                 child: ScreenUtilInit(
                   designSize: Size(392.7, 816.7),
+                  // builder: () => Loginpage(),
                   builder: () => Loginpage(),
                 ),
               ),

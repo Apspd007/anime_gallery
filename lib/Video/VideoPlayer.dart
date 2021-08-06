@@ -18,6 +18,7 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
       });
+    _controller.play();
   }
 
   @override
@@ -38,12 +39,12 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
             : Center(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {setState(() {
-          
-          _controller.value.isPlaying
+        onPressed: () {
+          setState(() {
+            _controller.value.isPlaying
                 ? _controller.pause()
                 : _controller.play();
-        });
+          });
         },
         child: _controller.value.isPlaying
             ? Icon(Icons.pause_circle_filled_rounded)

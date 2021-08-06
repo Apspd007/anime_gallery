@@ -28,18 +28,21 @@ class UserDataModel {
 class UserData {
   UserData({
     required this.searchedKeywords,
+    required this.searchedThemeKeywords,
     required this.favourites,
     required this.displayImage,
     required this.displayName,
   });
 
   List<dynamic> searchedKeywords;
+  List<dynamic> searchedThemeKeywords;
   List<dynamic> favourites;
   String displayName;
   String displayImage;
 
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
         searchedKeywords: json["searchedKeywords"],
+        searchedThemeKeywords: json["searchedThemeKeywords"],
         favourites: json["favourites"],
         displayName: json["displayName"],
         displayImage: json["displayImage"],

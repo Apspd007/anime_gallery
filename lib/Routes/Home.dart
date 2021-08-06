@@ -24,6 +24,7 @@ class _HomeState extends State<Home> {
   bool isFavPressed = false;
   int index = 0;
   bool refreshed = true;
+  late double padding;
 
   Widget changeSelection(int _index, Database _database, LocalUser _user) {
     switch (_index) {
@@ -61,6 +62,7 @@ class _HomeState extends State<Home> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // MyRandomAnimeListing.getRandomList(_animeName);
+    padding = MediaQuery.of(context).padding.top;
   }
 
   @override
@@ -71,11 +73,10 @@ class _HomeState extends State<Home> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.black26,
     ));
-    // final padding = MediaQuery.of(context).padding.top;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
-        padding: EdgeInsets.only(top: 32.3.h),
+        padding: EdgeInsets.only(top: padding),
         child: changeSelection(index, _database, user),
         // index == 0
         //     ? randomImages(_database, user)

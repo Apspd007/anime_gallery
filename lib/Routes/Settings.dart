@@ -19,6 +19,7 @@ class SettingsPage extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.black38,
     ));
+    final padding = MediaQuery.of(context).padding.top;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: StreamBuilder<DocumentSnapshot<Object?>>(
@@ -28,7 +29,7 @@ class SettingsPage extends StatelessWidget {
               final _data = snapshot.data!.data() as Map<String, dynamic>;
               final data = userDataModelFromJson(_data);
               return Padding(
-                padding: EdgeInsets.only(bottom: 18.h, top: 32.3.h),
+                padding: EdgeInsets.only(bottom: 18.h, top: padding),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

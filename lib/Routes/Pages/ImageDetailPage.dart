@@ -48,9 +48,7 @@ class ImageDetail extends StatefulWidget {
 
 class _ImageDetailState extends State<ImageDetail> {
   late final Image image;
-
   late final Anime anime;
-
   late FToast fToast;
 
   Future<void> _launchInBrowser(String url) async {
@@ -100,24 +98,28 @@ class _ImageDetailState extends State<ImageDetail> {
       required Database database,
       required LocalUser user,
       required Anime animeImage}) async {
-    if (isLiked == false) {
-      database.updateFavourite(user.uid, 'UserData.favourites',
-          FieldValue.arrayUnion([animeImage.toJson()]));
+    if (user.isAnonymous) {
+      _showToast('Feature Not Available');
     } else {
-      database.updateFavourite(user.uid, 'UserData.favourites',
-          FieldValue.arrayRemove([animeImage.toJson()]));
+      if (isLiked == false) {
+        database.updateFavourite(user.uid, 'UserData.favourites',
+            FieldValue.arrayUnion([animeImage.toJson()]));
+      } else {
+        database.updateFavourite(user.uid, 'UserData.favourites',
+            FieldValue.arrayRemove([animeImage.toJson()]));
+      }
+
+      /// send your request here
+      // final bool success= await sendRequest();
+
+      /// if failed, you can do nothing
+      // return success? !isLiked:isLiked;
+      isLiked = !isLiked;
     }
-
-    /// send your request here
-    // final bool success= await sendRequest();
-
-    /// if failed, you can do nothing
-    // return success? !isLiked:isLiked;
-
-    return !isLiked;
+    return isLiked;
   }
 
-  _showToast() {
+  _showToast(String text) {
     Widget toast = Container(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
       decoration: BoxDecoration(
@@ -125,7 +127,7 @@ class _ImageDetailState extends State<ImageDetail> {
         color: Colors.black54,
       ),
       child: Text(
-        "Double click to view",
+        text,
         style: GoogleFonts.comfortaa(
           color: Colors.white,
         ),
@@ -203,7 +205,9 @@ class _ImageDetailState extends State<ImageDetail> {
                   image: provider,
                 ),
                 onDoubleTap: viewFullImage,
-                onTap: _showToast,
+                onTap: () {
+                  _showToast("Double click to view");
+                },
               ),
               SizedBox(height: 20.h),
               Padding(

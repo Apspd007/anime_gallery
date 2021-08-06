@@ -35,6 +35,7 @@ class Auth implements AuthBase {
   Map<String, dynamic> jsonData(String? name) => {
         "UserData": {
           "searchedKeywords": [],
+          "searchedThemeKeywords": [],
           "favourites": [],
           "displayName": name == null ? '' : name,
           "displayImage": 'https://s3.zerochan.net/240/32/06/3395332.jpg',
