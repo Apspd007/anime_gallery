@@ -5,9 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ImageDescribtion extends StatefulWidget {
   final dynamic engName;
-
   final dynamic japName;
-
   final dynamic characters;
   final dynamic tags;
 
@@ -112,7 +110,7 @@ class _ImageDescribtionState extends State<ImageDescribtion> {
     final List<Widget> children = [];
     list.forEach((element) {
       children.add(TagButton(
-          backgroundColor: Color(0xFFFF8B23),
+          backgroundColor: Color(0xFFFFDE5D),
           text: element,
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(

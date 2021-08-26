@@ -61,7 +61,6 @@ class Auth implements AuthBase {
   @override
   Future<void> signOut(String userId, bool isAnonymous) async {
     if (isAnonymous) {
-      print('anonymous user: $isAnonymous');
       await _database.deleteUser(userId);
     }
     await _firebaseInstance.signOut();

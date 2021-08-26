@@ -4,7 +4,6 @@ import 'package:anime_list/Model/UserDataModel.dart';
 import 'package:anime_list/MyApp.dart';
 import 'package:anime_list/Services/AuthenticationService.dart';
 import 'package:anime_list/Services/FirestoreDatabase.dart';
-import 'package:anime_list/Video/VideoPlayer.dart';
 import 'package:anime_list/Widgets/LoadingState.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
